@@ -7,10 +7,13 @@ import UserListItem from './UserListItem';
 class UserList extends React.Component {
   state = {
     users: [],
+    numberOfUsers: 2,
+    isLoaded: false,
   };
 
   componentDidMount() {
-    const endPoint = 'https://randomuser.me/api/?results=10';
+    const endPoint =
+      'https://randomuser.me/api/?results=' + this.state.numberOfUsers;
 
     axios.get(endPoint).then(res => {
       const people = res.data.results;
@@ -24,9 +27,10 @@ class UserList extends React.Component {
     if (currentUsers.length > 0) {
       console.log(currentUsers);
       return currentUsers.map(user => {
-        console.log('Selected user', user);
         return (
           <UserListItem
+            key={user.login.uuid}
+            userid={user.login.uuid}
             fullname={
               user.name.title + ' ' + user.name.first + ' ' + user.name.last
             }
@@ -39,11 +43,32 @@ class UserList extends React.Component {
     }
   };
 
+  componentDidUpdate() {
+    const endPoint =
+      'https://randomuser.me/api/?results=' + this.state.numberOfUsers;
+    if (!this.state.isLoaded) {
+      axios.get(endPoint).then(res => {
+        const people = res.data.results;
+        this.setState({ users: people, isLoaded: true });
+      });
+    }
+  }
+
+  changeNumberOfUsersHandler = () => {
+    this.setState({ numberOfUsers: 5, isLoaded: false });
+  };
+
   render() {
     return (
       <React.Fragment>
         <HeaderTitle title="User List" tagline="All the users we can find" />
         <div className="container">
+          <button
+            className="btn btn-primary mb-3"
+            onClick={this.changeNumberOfUsersHandler}
+          >
+            Load 5 Users
+          </button>
           <table className="table table-bordered">
             <thead className="thead-light">
               <tr>

@@ -14,7 +14,7 @@ function UserListItem(props) {
         />
       </td>
       <td>
-        <Link to="/users/1">{props.fullname}</Link>
+        <Link to={'/users/' + props.userid}>{props.fullname}</Link>
       </td>
       <td>{props.email}</td>
       <td>{props.age}</td>
