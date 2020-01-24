@@ -10,11 +10,11 @@ function Body() {
   return (
     <div className="container-fluid">
       <Switch>
-        <Route path="/users/:id" component={UserDetails} />
+        <Route path="/users/:id" exact component={UserDetails} />
         <Route path="/users" component={UserList} />
 
         <Route path="/about" component={About} />
-        <Route path="/" component={Dashboard} />
+        <Route path="/" exact component={Dashboard} />
       </Switch>
     </div>
   );
