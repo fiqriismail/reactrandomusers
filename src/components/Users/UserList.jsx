@@ -1,9 +1,44 @@
 import React from 'react';
+import axios from 'axios';
 
 import HeaderTitle from './../shared/HeaderTitle';
 import UserListItem from './UserListItem';
 
 class UserList extends React.Component {
+  state = {
+    users: [],
+  };
+
+  componentDidMount() {
+    const endPoint = 'https://randomuser.me/api/?results=10';
+
+    axios.get(endPoint).then(res => {
+      const people = res.data.results;
+      this.setState({ users: people });
+    });
+  }
+
+  populateUsers = () => {
+    const currentUsers = this.state.users;
+
+    if (currentUsers.length > 0) {
+      console.log(currentUsers);
+      return currentUsers.map(user => {
+        console.log('Selected user', user);
+        return (
+          <UserListItem
+            fullname={
+              user.name.title + ' ' + user.name.first + ' ' + user.name.last
+            }
+            profileUrl={user.picture.thumbnail}
+            email={user.email}
+            age={user.dob.age}
+          />
+        );
+      });
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -19,12 +54,13 @@ class UserList extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <UserListItem
-                fullname="Mr. Brad Gibson"
-                profileUrl="https://randomuser.me/api/portraits/med/men/76.jpg"
-                email="brad.gibson@example.com"
-                age="26"
-              />
+              {this.state.users.length > 0 ? (
+                this.populateUsers()
+              ) : (
+                <tr>
+                  <td>Loading...</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
